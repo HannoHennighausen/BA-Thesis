@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep 27 14:02:01 2019
+Created on Thu Oct 10 17:50:38 2019
 
 @author: bq_hhennighausen
+
 FEniCS tutorial demo program: Incompressible Navier-Stokes equations
 for flow around a cylinder using the Incremental Pressure Correction
 Scheme (IPCS).
@@ -18,7 +20,7 @@ import numpy as np
 T = 5.0            # final time
 num_steps = 5000   # number of time steps
 dt = T / num_steps # time step size
-mu = 1         # dynamic viscosity
+mu = 1        # dynamic viscosity
 rho = 1            # density
 
 # Create mesh
@@ -103,19 +105,19 @@ A3 = assemble(a3)
 [bc.apply(A2) for bc in bcp]
 
 # Create XDMF files for visualization output
-xdmffile_u = XDMFFile('navier_stokes_cylinder/velocity2.xdmf')
-xdmffile_p = XDMFFile('navier_stokes_cylinder/pressure2.xdmf')
+xdmffile_u = XDMFFile('navier_stokes_cylinder/velocity5.xdmf')
+xdmffile_p = XDMFFile('navier_stokes_cylinder/pressure5.xdmf')
 
 # Create time series (for use in reaction_system.py)
-timeseries_u = TimeSeries('navier_stokes_cylinder/velocity_series2')
-timeseries_p = TimeSeries('navier_stokes_cylinder/pressure_series2')
+timeseries_u = TimeSeries('navier_stokes_cylinder/velocity_series5')
+timeseries_p = TimeSeries('navier_stokes_cylinder/pressure_series5')
 
 # Save mesh to file (for use in reaction_system.py)
-File('navier_stokes_cylinder/cylinder2.xml.gz') << mesh
+File('navier_stokes_cylinder/cylinder5.xml.gz') << mesh
 
 # Create progress bar
 #progress = Progress('Time-stepping')
-#set_log_level(Progress)
+#set_log_level(PROGRESS)
 
 # Time-stepping
 t = 0
@@ -142,13 +144,7 @@ for n in range(num_steps):
     plot(u_, title='Velocity')
     plot(p_, title='Pressure')
 
-    # Save solution to file (XDMF/HDF5)
-    xdmffile_u.write(u_, t)
-    xdmffile_p.write(p_, t)
-
-    # Save nodal values to file
-    timeseries_u.store(u_.vector(), t)
-    timeseries_p.store(p_.vector(), t)
+    
 
     # Update previous solution
     u_n.assign(u_)
@@ -158,5 +154,20 @@ for n in range(num_steps):
     #progress.update(t / T)
     print('u max:', u_.vector().get_local().max())
 
+
+# Save solution to file (XDMF/HDF5)
+xdmffile_u.write(u_, t)
+xdmffile_p.write(p_, t)
+
+# Save nodal values to file
+timeseries_u.store(u_.vector(), t)
+timeseries_p.store(p_.vector(), t)
+
+vtkfile_u_ = File('navier_cyl/velocity3.pvd')
+vtkfile_u_ << u_
+vtkfile_p_ = File('navier_cyl/pressure3.pvd')
+vtkfile_p_ << p_
+
 # Hold plot
 #interactive()
+
