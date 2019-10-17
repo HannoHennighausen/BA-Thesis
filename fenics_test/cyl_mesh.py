@@ -19,10 +19,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 
-T = 5.0            # final time
-num_steps = 5000   # number of time steps
+T = 3.0         # final time
+num_steps = 100   # number of time steps
 dt = T / num_steps # time step size
-mu = 1       # dynamic viscosity
+mu = 0.001       # dynamic viscosity
 rho = 1            # density
 
 # Create mesh
@@ -33,9 +33,9 @@ mesh = Mesh()
 base = Rectangle (Point(0.0,0.0), Point(40.0, 10.0))
 top = Rectangle (Point(10.0,6.5), Point(25.0, 10.0))
 bottom = Rectangle (Point(10.0,0.0), Point(25.0, 3.5))
-cylinder = Circle(Point(5.0, 5.0), 0.1)
+cylinder = Circle(Point(15.0, 5.0), 0.5)
 
-mesh = generate_mesh(base - top - bottom - cylinder, 40)
+mesh = generate_mesh(base - top - bottom - cylinder, 400)
 
 
 # Define function spaces
@@ -55,13 +55,13 @@ def wall_4(x, on_boundary):
     return on_boundary and (between(x[1], (0.0,3.5)) and (near(x[0], 10) or near(x[0], 25)) )
 def wall_5(x, on_boundary):
     return on_boundary and (between(x[1], (6.5,10.0)) and (near(x[0], 10) or near(x[0], 25)))
-cylinder = 'on_boundary && x[0]>4.8 && x[0]<5.2 && x[1]>4.8 && x[1]<5.2'
+cylinder = 'on_boundary && x[0]>14.4 && x[0]<15.6 && x[1]>4.4 && x[1]<5.6'
 
 # Define inflow profile
-inflow_profile = ('4.0*1.5*x[1]*(0.41 - x[1]) / pow(0.41, 2)', '0')
+#inflow_profile = ('4.0*1.5*x[1]*(0.41 - x[1]) / pow(0.41, 2)', '0')
 
 # Define boundary conditions
-bcu_inflow = DirichletBC(V, Expression(inflow_profile, degree=2), inflow)
+bcu_inflow = DirichletBC(Q, Constant(8), inflow)
 bcu_cylinder = DirichletBC(V, Constant((0, 0)), cylinder)
 bcp_outflow = DirichletBC(Q, Constant(0), outflow)
 bcu_noslip1  = DirichletBC(V, Constant((0, 0)), wall_1)
@@ -69,8 +69,8 @@ bcu_noslip2  = DirichletBC(V, Constant((0, 0)), wall_2)
 bcu_noslip3  = DirichletBC(V, Constant((0, 0)), wall_3)
 bcu_noslip4  = DirichletBC(V, Constant((0, 0)), wall_4)
 bcu_noslip5  = DirichletBC(V, Constant((0, 0)), wall_5)
-bcu = [bcu_inflow, bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cylinder]
-bcp = [bcp_outflow]
+bcu = [ bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cylinder]
+bcp = [bcu_inflow, bcp_outflow]
 
 # Define trial and test functions
 u = TrialFunction(V)
@@ -127,15 +127,15 @@ A3 = assemble(a3)
 [bc.apply(A2) for bc in bcp]
 
 # Create XDMF files for visualization output
-xdmffile_u = XDMFFile('cylinder/velocity.xdmf')
-xdmffile_p = XDMFFile('cylinder/pressure.xdmf')
+xdmffile_u = XDMFFile('cylinder/velocity2.xdmf')
+xdmffile_p = XDMFFile('cylinder/pressure2.xdmf')
 
 # Create time series (for use in reaction_system.py)
-timeseries_u = TimeSeries('cylinder/velocity_series')
-timeseries_p = TimeSeries('cylinder/pressure_series')
+timeseries_u = TimeSeries('cylinder/velocity_series2')
+timeseries_p = TimeSeries('cylinder/pressure_series2')
 
 # Save mesh to file (for use in reaction_system.py)
-File('cylinder/cylinder.xml.gz') << mesh
+File('cylinder/cylinder2.xml.gz') << mesh
 
 # Create progress bar
 #progress = Progress('Time-stepping')
