@@ -68,8 +68,18 @@ q = TestFunction(Q)
 
 f = Constant(( 0.0, 0.0))
 a = inner(grad(u), grad(v))*dx + div(v)*p*dx + q*div(u)*dx
-L = inner(f, v)*dx
+L1 = inner(f, v)*dx
 
+
+A1 = assemble(a)
+B1 = assemble(L1)
+
+[bc.apply(A1) for bx in bcu]
+[bc.apply(B1) for bx in bcu]
+
+solve(A1, u.vector(), B1)
+
+'''
 # Form for use in constructing preconditioner matrix
 b = inner(grad(u), grad(v))*dx + p*q*dx
 
@@ -91,7 +101,7 @@ solver.solve(U.vector(), bb)
 
 # Get sub-functions
 u, p = U.split()
-
+'''
 
 # Plot solution
 plt.figure()
