@@ -1,0 +1,4 @@
+/tmp/tmpkdartgo1/dolfin_expression_f103e4e6d9bdb2f6ff43cf79a7178fb5.cpp: In member function 'virtual void dolfin::dolfin_expression_f103e4e6d9bdb2f6ff43cf79a7178fb5::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const':
+/tmp/tmpkdartgo1/dolfin_expression_f103e4e6d9bdb2f6ff43cf79a7178fb5.cpp:61:23: error: 'Poiseuille' was not declared in this scope
+           values[0] = Poiseuille(x[1]);
+                       ^~~~~~~~~~

@@ -1,0 +1,10 @@
+/tmp/tmpln4mf24v/dolfin_expression_643d140ab6a6291c628e04e3ade1fc95.cpp: In member function 'virtual void dolfin::dolfin_expression_643d140ab6a6291c628e04e3ade1fc95::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const':
+/tmp/tmpln4mf24v/dolfin_expression_643d140ab6a6291c628e04e3ade1fc95.cpp:61:23: error: 'G' was not declared in this scope
+           values[0] = G/(4*mu)*(100-np.square(x[1]));
+                       ^
+/tmp/tmpln4mf24v/dolfin_expression_643d140ab6a6291c628e04e3ade1fc95.cpp:61:28: error: 'mu' was not declared in this scope
+           values[0] = G/(4*mu)*(100-np.square(x[1]));
+                            ^~
+/tmp/tmpln4mf24v/dolfin_expression_643d140ab6a6291c628e04e3ade1fc95.cpp:61:37: error: 'np' was not declared in this scope
+           values[0] = G/(4*mu)*(100-np.square(x[1]));
+                                     ^~

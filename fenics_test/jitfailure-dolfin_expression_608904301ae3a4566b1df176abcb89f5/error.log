@@ -1,0 +1,13 @@
+/tmp/tmpmk5mx2vq/dolfin_expression_608904301ae3a4566b1df176abcb89f5.cpp: In member function 'virtual void dolfin::dolfin_expression_608904301ae3a4566b1df176abcb89f5::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const':
+/tmp/tmpmk5mx2vq/dolfin_expression_608904301ae3a4566b1df176abcb89f5.cpp:61:23: error: 'G' was not declared in this scope
+           values[0] = G/(4*mu)*(10**2-np.square(x[1]));
+                       ^
+/tmp/tmpmk5mx2vq/dolfin_expression_608904301ae3a4566b1df176abcb89f5.cpp:61:28: error: 'mu' was not declared in this scope
+           values[0] = G/(4*mu)*(10**2-np.square(x[1]));
+                            ^~
+/tmp/tmpmk5mx2vq/dolfin_expression_608904301ae3a4566b1df176abcb89f5.cpp:61:37: error: invalid type argument of unary '*' (have 'int')
+           values[0] = G/(4*mu)*(10**2-np.square(x[1]));
+                                     ^
+/tmp/tmpmk5mx2vq/dolfin_expression_608904301ae3a4566b1df176abcb89f5.cpp:61:39: error: 'np' was not declared in this scope
+           values[0] = G/(4*mu)*(10**2-np.square(x[1]));
+                                       ^~

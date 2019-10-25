@@ -24,7 +24,7 @@ num_steps = 100   # number of time steps
 dt = T / num_steps # time step size
 mu = 0.001       # dynamic viscosity
 rho = 1            # density
-
+e = 0.01        #epsilon
 # Create mesh
 # Create mesh and define function spaces
 mesh = Mesh()
@@ -101,12 +101,11 @@ def sigma(u, p):
     return 2*mu*epsilon(u) - p*Identity(len(u))
 
 # Define variational problem for step 1
-#F1 = rho*dot((u - u_n) / k, v)*dx \
-   #+ rho*dot(dot(u_n, nabla_grad(u_n)), v)*dx \
-   #+ inner(sigma(U, p_n), epsilon(v))*dx \
-   #+ dot(p_n*n, v)*ds - dot(mu*nabla_grad(U)*n, v)*ds \
-   #- dot(f, v)*dx
-F1 = inner(grad(u), grad(v))*dx + div(v)*p*dx + q*div(u)*dx
+F1 = rho*dot((u - u_n) / k, v)*dx \
+   + e * rho*dot(dot(u_n, nabla_grad(u_n)), v)*dx \
+   + inner(sigma(U, p_n), epsilon(v))*dx \
+   + dot(p_n*n, v)*ds - dot(mu*nabla_grad(U)*n, v)*ds \
+   - dot(f, v)*dx
 a1 = lhs(F1)
 L1 = rhs(F1)
 
