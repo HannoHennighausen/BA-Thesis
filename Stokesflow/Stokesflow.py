@@ -36,13 +36,6 @@ else:
          "Krylov subspace method. Terminating.")
     exit()
 
-# Load mesh and subdomains
-G = 10
-mu = 1
-def Poiseuille(r):
-    return G/(4*mu)*(1-r*r/100)
-
-
 # Create mesh and define function spaces
 mesh = Mesh()
 
@@ -50,12 +43,12 @@ mesh = Mesh()
 base = Rectangle (Point(0.0,0.0), Point(40.0, 10.0))
 top = Rectangle (Point(10.0,6.5), Point(25.0, 10.0))
 bottom = Rectangle (Point(10.0,0.0), Point(25.0, 3.5))
-#cylinder  = Circle(Point(5.0, 5.0), 4.0)
+cylinder  = Circle(Point(5.0, 5.0), 4.0)
 #cylinder  = Ellipse(Point(18.0,5.0), 6.0,1.5)
-cylinder  = Ellipse(Point(32.0,5.0), 5.0,3.0)
+#cylinder  = Ellipse(Point(32.0,5.0), 5.0,3.0)
 domain = base - top - bottom - cylinder
 
-mesh = generate_mesh(domain, 100);
+mesh = generate_mesh(domain, 500);
 
 # Define function spaces
 
@@ -78,7 +71,9 @@ def wall_4(x, on_boundary):
     return on_boundary and (between(x[1], (0.0,3.5)) and (near(x[0], 10) or near(x[0], 25)) )
 def wall_5(x, on_boundary):
     return on_boundary and (between(x[1], (6.5,10.0)) and (near(x[0], 10) or near(x[0], 25)))
-cylinder = 'on_boundary && x[0]>27 && x[0]<37 && x[1]>2 && x[1]<8'
+cylinder = 'on_boundary && x[0]>0.9 && x[0]<9.1 && x[1]>0.9 && x[1]<9.1'
+#cylinder = 'on_boundary && x[0]>27 && x[0]<37 && x[1]>2 && x[1]<8'
+#cylinder = 'on_boundary && x[0]>27 && x[0]<37 && x[1]>2 && x[1]<8'
 
 # Define inflow profile
 
@@ -104,7 +99,7 @@ bcs = [bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cyli
 
 #define variational problem for Stokes flow
 f = Constant((0, 0))
-a = 10*(inner(grad(u), grad(v))*dx) + div(v)*p*dx + q*div(u)*dx
+a = 0.1*(inner(grad(u), grad(v))*dx) + div(v)*p*dx + q*div(u)*dx
 L = inner(f, v)*dx
 
 # Form for use in constructing preconditioner matrix
@@ -130,9 +125,9 @@ solver.solve(U.vector(), bb)
 (u, p) = U.split()
 
 # Save solution in VTK format
-ufile_pvd = File("velocity1234.pvd")
+ufile_pvd = File("velocity_front0.1.pvd")
 ufile_pvd << u
-pfile_pvd = File("pressure1234.pvd")
+pfile_pvd = File("pressure_front0.1.pvd")
 pfile_pvd << p
 
 # Plot solution
