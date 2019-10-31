@@ -45,10 +45,10 @@ top = Rectangle (Point(10.0,6.5), Point(25.0, 10.0))
 bottom = Rectangle (Point(10.0,0.0), Point(25.0, 3.5))
 cylinder  = Circle(Point(5.0, 5.0), 4.0)
 #cylinder  = Ellipse(Point(18.0,5.0), 6.0,1.5)
-#cylinder  = Ellipse(Point(32.0,5.0), 5.0,3.0)
-domain = base - top - bottom - cylinder
+cylinder1  = Ellipse(Point(32.0,5.0), 5.0,3.0)
+domain = base - top - bottom - cylinder - cylinder1
 
-mesh = generate_mesh(domain, 500);
+mesh = generate_mesh(domain, 100);
 
 # Define function spaces
 
@@ -73,7 +73,7 @@ def wall_5(x, on_boundary):
     return on_boundary and (between(x[1], (6.5,10.0)) and (near(x[0], 10) or near(x[0], 25)))
 cylinder = 'on_boundary && x[0]>0.9 && x[0]<9.1 && x[1]>0.9 && x[1]<9.1'
 #cylinder = 'on_boundary && x[0]>27 && x[0]<37 && x[1]>2 && x[1]<8'
-#cylinder = 'on_boundary && x[0]>27 && x[0]<37 && x[1]>2 && x[1]<8'
+cylinder1 = 'on_boundary && x[0]>26.9 && x[0]<37.1 && x[1]>2 && x[1]<8'
 
 # Define inflow profile
 
@@ -81,6 +81,7 @@ cylinder = 'on_boundary && x[0]>0.9 && x[0]<9.1 && x[1]>0.9 && x[1]<9.1'
 bcp_inflow = DirichletBC(W.sub(0),  inflow, left)
 bcp_outflow = DirichletBC(W.sub(1), Constant(0), outflow)
 bcu_cylinder = DirichletBC(W.sub(0), Constant((0, 0)), cylinder)
+bcu_cylinder1 = DirichletBC(W.sub(0), Constant((0, 0)), cylinder1)
 bcu_noslip1  = DirichletBC(W.sub(0), Constant((0, 0)), wall_1)
 bcu_noslip2  = DirichletBC(W.sub(0), Constant((0, 0)), wall_2)
 bcu_noslip3  = DirichletBC(W.sub(0), Constant((0, 0)), wall_3)
@@ -90,7 +91,8 @@ bcu_noslip5  = DirichletBC(W.sub(0), Constant((0, 0)), wall_5)
 # collect boundary conditions
 #bcu = [ bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cylinder]
 #bcp = [bcp_inflow, bcp_outflow]
-bcs = [bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cylinder, bcp_inflow, bcp_outflow]
+bcs = [bcu_noslip1, bcu_noslip2, bcu_noslip3, bcu_noslip4, bcu_noslip5, bcu_cylinder, bcp_inflow,\
+       bcp_outflow, bcu_cylinder1]
 
 # Define trial and test functions
 (u, p) = TrialFunctions(W)
@@ -124,10 +126,17 @@ solver.solve(U.vector(), bb)
 # Get sub-functions
 (u, p) = U.split()
 
+# Tabulate dof coordinates
+x = W.tabulate_dof_coordinates(mesh)
+x = x.reshape((-2, mesh.geometry().dim()))
+
+# Save solution
+np.savetxt("mysol.txt", zip(x[:,0], x[:,1], du.vector()[:]))
+
 # Save solution in VTK format
-ufile_pvd = File("velocity_front0.1.pvd")
+ufile_pvd = File("velocity_front and back.pvd")
 ufile_pvd << u
-pfile_pvd = File("pressure_front0.1.pvd")
+pfile_pvd = File("pressure_front and back.pvd")
 pfile_pvd << p
 
 # Plot solution
