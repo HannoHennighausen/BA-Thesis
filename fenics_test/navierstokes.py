@@ -63,7 +63,7 @@ def epsilon(u):
 
 # Define stress tensor
 def sigma(u, p):
-    return 2*mu*epsilon(u) - p*Identity(len(u))
+    return 2*mu*epsilon(u) - p*Identity(l  en(u))
 
 # Define variational problem for step 1
 F1 = rho*dot((u - u_n) / k, v)*dx + \
@@ -128,4 +128,3 @@ for n in range(num_steps):
 
 # Hold plot
 #interactive()
-

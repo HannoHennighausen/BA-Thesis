@@ -39,7 +39,7 @@ else:
 # Create mesh and define function spaces
 mesh = Mesh()
 
-# Create microchannel as mesh 
+# Create microchannel as mesh
 base = Rectangle (Point(0.0,0.0), Point(40.0, 10.0))
 top = Rectangle (Point(10.0,6.5), Point(25.0, 10.0))
 bottom = Rectangle (Point(10.0,0.0), Point(25.0, 3.5))
@@ -54,10 +54,11 @@ mesh = generate_mesh(domain, 100);
 
 #2dim for velocity
 V = VectorElement('P',mesh.ufl_cell(), 2)
-VV = Vectorspace(mesh,V)
+VV= FunctionSpace(mesh, V)
 
 #1dim for pressure
 Q = FiniteElement('P',mesh.ufl_cell(), 1)
+QQ= FunctionSpace(mesh, Q)
 
 #create vectorspace by multipling 2x1 dimensions
 W = FunctionSpace(mesh, V*Q)
@@ -135,25 +136,57 @@ solver.solve(U.vector(), bb)
 (u, p) = U.split()
 
 
-xdmffile_u = XDMFFile('velocity2.xdmf')
-xdmffile_p = XDMFFile('pressure2.xdmf')
+#extract velocity values
+u_P1 = Function(VV)
+u_P1 = project(u, VV)
+u_nodal_values = u_P1.vector()
+u_array = u_nodal_values.vec()
 
-xdmffile_u.write(u)
-xdmffile_p.write(p)
+#print(u_array.array)
+#print(u_array[0])
+#
+i=2
+coor = mesh.coordinates()
+#print(coor.shape[0])
+#print(coor[i][0], coor[i][1], u_array[i])
 
-u1=project(u,VV)
-u_value=u1.vector()
+#extract pressure values
+p_P1 = Function(QQ)
+p_P1 = project(p, QQ)
+p_nodal_values = p_P1.vector()
+p_array = p_nodal_values.vec()
 
-print(u_value.array())
-# =============================================================================
-# # Tabulate dof coordinates
-# x = W.tabulate_dof_coordinates(mesh)
-# x = x.reshape((-2, mesh.geometry().dim()))
-# 
-# # Save solution
-# np.savetxt("mysol.txt", zip(x[:,0], x[:,1], du.vector()[:]))
-# 
-# =============================================================================
+# print(p_array.array)
+# print(p_array.size)
+vertex_values = u_P1[0].compute_vertex_values()
+for i, x in enumerate(coor):
+    print('vertex %d: vertex_values[%d] = %g\tu(%s) = %g' %(i, i, vertex_values[i], x, u(x)))
+
+arr = u.vector().get_local()
+coor = mesh.coordinates()
+vtd = W.dofmap()
+
+values = list()
+#print(coor)
+np.savetxt('coor.txt', coor, fmt='%s')
+np.savetxt('velocities.txt',u_array)
+#print(str(vtd.entity_dofs(mesh, 0)))
+# for i, dum in enumerate(coor):
+#     values.append([arr[vtd[2*i]],arr[vtd[2*i+1]]])
+# values = np.array(values)
+#
+# x = list()
+# y = list()
+# vx = list()
+# vy = list()
+# for i, dum in enumerate(coor):
+#     print ('(%f,%f) -> (%f,%f)' %(coor[i][0], coor[i][1], values[i][0], values[i][1]))
+#     x.append(coor[i][0])
+#     y.append(coor[i][1])
+#     vx.append(values[i][0])
+#     vy.append(values[i][1])
+#
+# print(x,y, vx,vy)
 # Save solution in VTK format
 ufile_pvd = File("velocity_front and back.pvd")
 ufile_pvd << u
@@ -161,10 +194,12 @@ pfile_pvd = File("pressure_front and back.pvd")
 pfile_pvd << p
 
 # Plot solution
-plt.figure()
-plot(u)
-plt.show()
+#plt.figure()
+#plot(u)
+#plt.show()
 
-plt.figure()
-plot(p)
-plt.show()
+#plt.figure()
+#plot(p)
+#plt.show()
+
+Wortis

@@ -1,0 +1,77 @@
+\documentclass[12pt,a4paper,titlepage, twoside, openright]{article}
+\title{BA Thesis}
+\usepackage[ngerman, english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{nicefrac}
+\usepackage{gensymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{blindtext}
+\usepackage{subfiles}
+\usepackage{hyperref}
+\graphicspath{{figures/}{../figures/}}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{afterpage}
+\usepackage{siunitx}
+%\usepackage{placeins}
+\usepackage{longtable}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    %\addtocounter{page}{-1}%
+    \newpage}
+
+\linespread{1.25}
+
+
+\makeatletter
+\def\tagform@#1{\maketag@@@{\ignorespaces#1\unskip\@@italiccorr}}
+\let\orgtheequation\theequation
+\def\theequation{(\orgtheequation)}
+\makeatother
+\let\orgautoref\autoref
+\renewcommand{\autoref}[1]{\def\equationautorefname{Eq.}\orgautoref{#1}}
+
+\addto\extrasenglish{%
+  \renewcommand{\subsectionautorefname}{Section}%
+}
+
+\addto\extrasenglish{%
+  \renewcommand{\subsubsectionautorefname}{Section}%
+}
+
+
+\begin{document}
+\pagenumbering{roman}
+%\input{ba_titlepage.tex}
+\afterpage{\blankpage}
+%\subfile{abstract.tex}
+\newpage
+%\afterpage{\blankpage}
+\newpage
+%\input{ba_selbstst.tex}
+\afterpage{\blankpage}
+\newpage
+\tableofcontents
+\afterpage{\blankpage}
+\newpage
+
+%\pagestyle{fancy}
+\pagenumbering{arabic}
+\subfile{Introduction.tex}
+\newpage
+\subfile{Theory1.tex}
+\newpage
+\subfile{Analysis_Discussion.tex}
+
+
+\bibliography{my_bib}
+\bibliographystyle{ieeetr}
+\newpage
+\subfile{acknowledgement.tex}
+\end{document}

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Thu Oct 10 11:37:36 2019
@@ -39,7 +39,7 @@ else:
 # Create mesh and define function spaces
 mesh = Mesh()
 
-# Create microchannel as mesh 
+# Create microchannel as mesh
 base = Rectangle (Point(0.0,0.0), Point(40.0, 10.0))
 top = Rectangle (Point(10.0,6.5), Point(25.0, 10.0))
 bottom = Rectangle (Point(10.0,0.0), Point(25.0, 3.5))
@@ -54,7 +54,7 @@ mesh = generate_mesh(domain, 100);
 
 #2dim for velocity
 V = VectorElement('P',mesh.ufl_cell(), 2)
-VV = Vectorspace(mesh,V)
+VV = FunctionSpace(mesh,V)
 
 #1dim for pressure
 Q = FiniteElement('P',mesh.ufl_cell(), 1)
@@ -141,18 +141,20 @@ xdmffile_p = XDMFFile('pressure2.xdmf')
 xdmffile_u.write(u)
 xdmffile_p.write(p)
 
-u1=project(u,VV)
-u_value=u1.vector()
-
-print(u_value.array())
+# =============================================================================
+# u1=project(u,VV)
+# u_value=u1.vector()
+#
+# print(u_value.array())
+# =============================================================================
 # =============================================================================
 # # Tabulate dof coordinates
 # x = W.tabulate_dof_coordinates(mesh)
 # x = x.reshape((-2, mesh.geometry().dim()))
-# 
+#
 # # Save solution
 # np.savetxt("mysol.txt", zip(x[:,0], x[:,1], du.vector()[:]))
-# 
+#
 # =============================================================================
 # Save solution in VTK format
 ufile_pvd = File("velocity_front and back.pvd")
